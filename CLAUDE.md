@@ -156,12 +156,8 @@ if (rc.VmUrlTemplate is null && (catalogEnvironment is null || kubernetesDomain 
 
 Detecting k8s: check `rcForHint?.KubernetesCluster is not null || rcForHint?.KubernetesUrl is not null` on the region config.
 
-### Watch mode — catalog events suppressed after run 1
-In watch mode, `CatalogEvents` from `HealthCheckRunner` are only passed through on the first run. On subsequent runs they are replaced with an empty list to avoid re-printing the catalog resolution summary on every poll cycle:
-
-```csharp
-CatalogEvents = run == 1 ? report.CatalogEvents : [],
-```
+### Watch mode — catalog re-resolved every run
+In watch mode, catalog resolution runs on every poll cycle so that mid-release version changes (new VM batch, k8s rollout) are captured immediately. Before each resolution phase, `HealthCheckRunner` resets `VmTargets`, `KubernetesUrl`, and `KubernetesCluster` on all regions that have `CatalogPlatform`/`CatalogRegion` set (hardcoded targets without those fields are left untouched). `CatalogEvents` are passed through on every run so the version label in the output always reflects the current deployment.
 
 ### Fixture-based tests
 Unit tests for `CatalogClient` and `ArgocdClient` never inline JSON payloads. Fixtures live in `HealthChecker.Tests/Fixtures/` (under `argocd/` and `catalog/` subdirectories) and are loaded via the helper classes `ArgocdJson` and `CatalogJson` in `HealthChecker.Tests/Helpers/`. Constants in those helpers mirror values embedded in the fixture files — use the constants in assertions rather than duplicating raw strings. New tests that need HTTP responses should follow this fixture pattern.

@@ -62,6 +62,9 @@ public class CatalogClientTests
     [Fact]
     public async Task Resolves_Latest_Version_By_Event_Time()
     {
+        // The two versions in this fixture are "1.0.0" and "2.0.0" — unrelated base
+        // versions. Only the newer one (2.0.0) matches; 1.0.0 is not a commit-SHA
+        // variant of 2.0.0, so it is excluded.
         var handler = new MockHttpMessageHandler();
         handler.EnqueueResponse(HttpStatusCode.OK, CatalogJson.TwoVersionsResponse());
 
@@ -70,6 +73,39 @@ public class CatalogClientTests
 
         result.ResolvedVersion.Should().Be(CatalogJson.LatestVersion);
         result.ResolvedVersion.Should().NotBe(CatalogJson.OlderVersion);
+    }
+
+    // ── StripCommitSuffix ─────────────────────────────────────────────────────
+
+    [Theory]
+    [InlineData("1.70.2.37-4f694a1",  "1.70.2.37")]   // 7-char lowercase hex SHA
+    [InlineData("1.70.2.37-ab80594",  "1.70.2.37")]   // another 7-char lowercase hex SHA
+    [InlineData("1.70.2.37-4F694A1",  "1.70.2.37")]   // 7-char uppercase hex SHA
+    [InlineData("1.70.2.37-AB80594",  "1.70.2.37")]   // another 7-char uppercase hex SHA
+    [InlineData("1.70.2.37",          "1.70.2.37")]   // no suffix
+    [InlineData("1.51.4.1",           "1.51.4.1")]    // numeric minor — not a SHA
+    [InlineData("1.70.2.37-dotcover", "1.70.2.37-dotcover")] // non-hex suffix
+    public void StripCommitSuffix_Returns_Base_Version(string input, string expected)
+    {
+        CatalogClient.StripCommitSuffix(input).Should().Be(expected);
+    }
+
+    [Fact]
+    public async Task Merges_Targets_Across_Multiple_Versions_For_Same_Region()
+    {
+        // Real-world hybrid: Docker VMs under version "1.70.2.37" and a k8s cluster
+        // under "1.70.2.37-4f694a1" are both deployed simultaneously.
+        // The client must collect targets from all versions, not just the most recent.
+        var handler = new MockHttpMessageHandler();
+        handler.EnqueueResponse(HttpStatusCode.OK, CatalogJson.CrossVersionHybridResponse());
+
+        var result = await CatalogClient.FetchInstances(
+            Client(handler), BaseUrl, SvcName, null, Env, Platform, Region);
+
+        result.VmTargets.Should().BeEquivalentTo(CatalogJson.CrossVersionVmTargets);
+        result.KubernetesCluster.Should().Be(CatalogJson.K8sCluster);
+        result.ResolvedVersion.Should().Contain(CatalogJson.CrossVersionDocker);
+        result.ResolvedVersion.Should().Contain(CatalogJson.CrossVersionAks);
     }
 
     [Fact]

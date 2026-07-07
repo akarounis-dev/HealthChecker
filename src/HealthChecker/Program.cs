@@ -187,9 +187,9 @@ root.SetHandler(async (InvocationContext ctx) =>
 
             var watchReport = report with
             {
-                // Show catalog events on run 1 so failures are visible; suppress on re-runs
-                // (targets are already resolved and events would be redundant noise).
-                CatalogEvents = run == 1 ? report.CatalogEvents : [],
+                // Always show catalog events — catalog is re-resolved every run so the
+                // version label reflects any mid-release deployment changes.
+                CatalogEvents = report.CatalogEvents,
                 WatchRun      = run,
                 WatchChanges  = watchChanges,
             };

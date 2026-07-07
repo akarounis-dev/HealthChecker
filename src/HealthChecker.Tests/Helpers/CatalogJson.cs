@@ -14,8 +14,12 @@ static class CatalogJson
     public const string             K8sCluster      = "eur-euw-prd-aks02";
     public const string             K8sVersion      = "2.0.0";
     public const string             HybridVersion   = "3.0.0";
-    public const string             LatestVersion   = "2.0.0";  // two-versions fixture: newer wins
-    public const string             OlderVersion    = "1.0.0";  // two-versions fixture: older loses
+    public const string             LatestVersion        = "2.0.0";          // two-versions fixture: only version matched (base-version filter excludes 1.0.0)
+    public const string             OlderVersion         = "1.0.0";          // two-versions fixture: excluded by base-version filter
+    public const string             CrossVersionDocker   = "1.70.2.37";      // cross-version hybrid: Docker version
+    public const string             CrossVersionAks      = "1.70.2.37-4f694a1"; // cross-version hybrid: AKS version
+    public static readonly string[] CrossVersionVmTargets =
+        ["prd-spt14-01", "prd-spt14-02", "prd-spt14-03", "prd-spt14-04", "prd-spt14-05", "prd-spt14-06"];
 
     // ── Fixture loaders ───────────────────────────────────────────────────────
 
@@ -28,8 +32,11 @@ static class CatalogJson
     /// <summary>Single version with both VM targets and a k8s cluster target.</summary>
     public static string HybridResponse()          => Load("catalog/response_hybrid.json");
 
-    /// <summary>Two versions with different event times; the newer one should be selected.</summary>
-    public static string TwoVersionsResponse()     => Load("catalog/response_two_versions.json");
+    /// <summary>Two versions with different event times; both are collected, newer appears first in label.</summary>
+    public static string TwoVersionsResponse()          => Load("catalog/response_two_versions.json");
+
+    /// <summary>Two versions for the same region: one with Docker VMs, one with a k8s cluster (real-world hybrid).</summary>
+    public static string CrossVersionHybridResponse()   => Load("catalog/response_cross_version_hybrid.json");
 
     /// <summary>Response with an empty service_version array.</summary>
     public static string EmptyResponse()           => Load("catalog/response_empty.json");

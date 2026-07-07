@@ -70,6 +70,17 @@ class HealthCheckRunner(Config config, RunOptions options)
 
         if (config.Catalog is not null)
         {
+            // Reset previously-resolved targets so catalog is re-queried every run.            
+            foreach (var svc in activeServices)
+                foreach (var name in svc.Regions
+                    .Where(kvp => kvp.Value.CatalogPlatform is not null && kvp.Value.CatalogRegion is not null)
+                    .Select(kvp => kvp.Key)
+                    .ToList())
+                {
+                    var rc = svc.Regions[name];
+                    svc.Regions[name] = rc with { VmTargets = null, KubernetesUrl = null, KubernetesCluster = null };
+                }
+
             var lookups = activeServices
                 .SelectMany(svc => svc.Regions
                     .Where(kvp =>

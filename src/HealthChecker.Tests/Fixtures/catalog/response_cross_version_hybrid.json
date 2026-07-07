@@ -1,0 +1,40 @@
+{
+  "service_version": [
+    {
+      "version": "1.70.2.37",
+      "deployments": {
+        "environments": [
+          {
+            "name": "prd", "platform": "eur", "region": "euw",
+            "events": [
+              {
+                "event_time": "2026-07-07T11:19:00Z",
+                "targets": ["prd-spt14-01", "prd-spt14-02", "prd-spt14-03"]
+              },
+              {
+                "event_time": "2026-07-07T11:27:00Z",
+                "targets": ["prd-spt14-04", "prd-spt14-05", "prd-spt14-06"]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "version": "1.70.2.37-4f694a1",
+      "deployments": {
+        "environments": [
+          {
+            "name": "prd", "platform": "eur", "region": "euw",
+            "events": [
+              {
+                "event_time": "2026-07-07T11:12:00Z",
+                "targets": ["eur-euw-prd-aks02"]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
