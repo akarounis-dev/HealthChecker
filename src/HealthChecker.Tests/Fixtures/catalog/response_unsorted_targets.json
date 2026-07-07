@@ -1,0 +1,20 @@
+{
+  "service_version": [
+    {
+      "version": "1.0.0",
+      "deployments": {
+        "environments": [
+          {
+            "name": "prd", "platform": "eur", "region": "euw",
+            "events": [
+              {
+                "event_time": "2024-06-01T12:00:00Z",
+                "targets": ["prd-spt09-03", "prd-spt09-01", "prd-spt09-02"]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

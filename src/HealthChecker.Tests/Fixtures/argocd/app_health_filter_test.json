@@ -1,0 +1,10 @@
+{
+  "status": {
+    "health": { "status": "Degraded" },
+    "resources": [
+      { "kind": "Deployment", "name": "web-sportsbookfeed",        "health": { "status": "Healthy"     } },
+      { "kind": "Service",    "name": "web-sportsbookfeed",        "health": { "status": "Missing"     } },
+      { "kind": "ReplicaSet", "name": "web-sportsbookfeed-7d9f8b", "health": { "status": "Progressing" } }
+    ]
+  }
+}

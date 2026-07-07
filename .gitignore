@@ -1,0 +1,12 @@
+# Build output
+bin/
+obj/
+
+# Real config files (contain secrets - commit only config.sample.json)
+**/configs/config.*.json
+!**/configs/config.sample.json
+
+# IDE
+.vs/
+*.user
+.idea/

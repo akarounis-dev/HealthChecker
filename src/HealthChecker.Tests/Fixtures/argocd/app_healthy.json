@@ -1,0 +1,10 @@
+{
+  "status": {
+    "health": { "status": "Healthy" },
+    "resources": [
+      { "kind": "Deployment",  "name": "web-sportsbookfeed",        "health": { "status": "Healthy" } },
+      { "kind": "Service",     "name": "web-sportsbookfeed",        "health": { "status": "Healthy" } },
+      { "kind": "ConfigMap",   "name": "web-sportsbookfeed-config", "health": { "status": "Healthy" } }
+    ]
+  }
+}

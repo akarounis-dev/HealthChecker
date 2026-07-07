@@ -1,0 +1,6 @@
+{
+  "nodes": [
+    { "kind": "Deployment",   "name": "web-sportsbookfeed", "namespace": "novibet",    "group": "apps",               "version": "v1"      },
+    { "kind": "IngressRoute", "name": "web-sportsbookfeed", "namespace": "sportsbook", "group": "traefik.containo.us", "version": "v1alpha1" }
+  ]
+}

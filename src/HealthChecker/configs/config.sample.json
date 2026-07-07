@@ -1,0 +1,98 @@
+{
+  "defaults": {
+    "response_time_warn_ms": 500
+  },
+  "kibana": {
+    "url": "https://kibana.dvo-novibet.systems",
+    "data_view_id": null,
+    "log_minutes": 5,
+    "query_template": "level: \"Error\"",
+    "columns": ["level", "host.name", "message", "logger", "exceptionType", "exceptionMessage"]
+  },
+  "catalog": {
+    "base_url": "https://servicekatalog.dvo-novibet.systems/api/v1/services",
+    "environment": "prd",
+    "k8s_domain": "novibet.systems",
+    "argocd_server": "https://argo.k8s.dvo-novibet.systems",
+    "argocd_token": null
+  },
+  "services": [
+    {
+      "catalog_name": "web-sportsbookfeed",
+      "alias": "feed",
+      "port": 8092,
+      "healthcheck_contains": "SportsbookFeed is live!",
+      "retry_attempts": 1,
+      "regions": {
+        "europe": {
+          "catalog_platform": "eur",
+          "catalog_region": "euw",
+          "kibana_data_view_id": "2642b79f-fd96-43dc-9379-78f8bd4af6ff"
+        },
+        "brazil": {
+          "catalog_platform": "bra",
+          "catalog_region": "brs",
+          "kibana_data_view_id": "33cbc175-d00e-4c25-92ab-43c8ce99ca3e"
+        }
+      }
+    },
+    {
+      "catalog_name": "services-sportsbookinfo",
+      "alias": "sbi",
+      "port": 8096,
+      "healthcheck_contains": "SportsbookInfo is live!",
+      "regions": {
+        "central": {
+          "catalog_platform": "cen",
+          "catalog_region": "eun",
+          "kibana_data_view_id": "f55a9871-2a2b-4950-aada-4a1aafb472f6"
+        }
+      }
+    },
+    {
+      "catalog_name": "backoffices-tradertoolsapinetcore",
+      "alias": "tradertools",
+      "port": 8080,
+      "healthcheck_contains": "TraderToolsApiNetCore is live!",
+      "regions": {
+        "central": {
+          "catalog_platform": "cen",
+          "catalog_region": "eun",
+          "kibana_data_view_id": "174c33bb-b5e0-4b3a-9127-9938664525f1"
+        }
+      }
+    },
+    {
+      "catalog_name": "services-sportsbookcontent",
+      "alias": "content",
+      "port": 8086,
+      "healthcheck_contains": "SportsbookContent is live!",
+      "regions": {
+        "central": {
+          "catalog_platform": "cen",
+          "catalog_region": "eun",
+          "kibana_data_view_id": "935900bb-4eb4-41b1-9110-66dd5a9b6a37"
+        }
+      }
+    },
+    {
+      "catalog_name": "web-sportsbookgateway",
+      "alias": "gateway",
+      "port": 8080,
+      "healthcheck_contains": "Sportsbook.Gateway is live!",
+      "regions": {
+        "europe": {
+          "catalog_platform": "eur",
+          "catalog_region": "euw",
+          "vm_url_template": "http://{target}.{env}-{domain}:{port}/",
+          "kibana_data_view_id": "d4b1f679-9b34-457e-901a-69a8e9073580"
+        },
+        "brazil": {
+          "catalog_platform": "bra",
+          "catalog_region": "brs",
+          "kibana_data_view_id": "4d40caa3-9c6b-469f-9624-38032e072672"
+        }
+      }
+    }
+  ]
+}

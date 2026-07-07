@@ -1,0 +1,11 @@
+{
+  "nodes": [
+    { "kind": "Deployment", "name": "web-sportsbookfeed",              "namespace": "novibet", "group": "apps", "version": "v1" },
+    { "kind": "ReplicaSet", "name": "web-sportsbookfeed-7d9f8b",       "namespace": "novibet", "group": "apps", "version": "v1" },
+    { "kind": "Pod",        "name": "web-sportsbookfeed-7d9f8b-p9rx2", "namespace": "novibet", "group": "",     "version": "v1" },
+    { "kind": "Pod",        "name": "web-sportsbookfeed-7d9f8b-k4mn1", "namespace": "novibet", "group": "",     "version": "v1" },
+    { "kind": "Pod",        "name": "web-sportsbookfeed-7d9f8b-w8qt3", "namespace": "novibet", "group": "",     "version": "v1" },
+    { "kind": "Pod",        "name": "web-sportsbookfeed-7d9f8b-r2lp7", "namespace": "novibet", "group": "",     "version": "v1" },
+    { "kind": "Pod",        "name": "web-sportsbookfeed-7d9f8b-x5vn9", "namespace": "novibet", "group": "",     "version": "v1" }
+  ]
+}
