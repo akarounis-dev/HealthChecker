@@ -656,9 +656,8 @@ public class ReporterTests : IDisposable
     /// </summary>
     static string StripAllAnsi(string s)
     {
-        var re = System.Text.RegularExpressions.Regex.Replace;
-        s = re(s, @"\x1b\][^\x1b\x07]*(?:\x1b\\|\x07)", "");  // OSC
-        s = re(s, @"\x1b\[[^a-zA-Z]*[a-zA-Z]", "");            // CSI
+        s = System.Text.RegularExpressions.Regex.Replace(s, @"\x1b\][^\x1b\x07]*(?:\x1b\\|\x07)", "");  // OSC
+        s = System.Text.RegularExpressions.Regex.Replace(s, @"\x1b\[[^a-zA-Z]*[a-zA-Z]", "");            // CSI
         return s;
     }
 }
