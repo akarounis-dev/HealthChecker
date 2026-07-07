@@ -38,10 +38,12 @@ class ConsoleReporter : IReporter
     /// Returns a Spectre markup string that renders as a clickable OSC-8 hyperlink in
     /// supporting terminals. Spectre measures only the visible text length, so word-wrap
     /// calculations stay correct regardless of terminal width.
-    /// In no-color mode Spectre automatically strips the link decoration and outputs plain text.
+    /// In no-color mode plain escaped text is returned — Spectre strips SGR codes but
+    /// still emits OSC-8 link sequences even in NoColors mode, so we guard explicitly.
     /// </summary>
-    static string Link(string url)
+    string Link(string url)
     {
+        if (NoColor) return Markup.Escape(url);
         // Percent-encode [ and ] so they can't confuse Spectre's markup tag parser when
         // embedded in the [link=url] attribute. The visible text still uses Markup.Escape
         // (which doubles them) so it renders correctly as display characters.
