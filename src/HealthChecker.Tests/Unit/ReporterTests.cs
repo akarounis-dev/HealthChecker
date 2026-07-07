@@ -650,13 +650,15 @@ public class ReporterTests : IDisposable
 
     /// <summary>
     /// Strips all ANSI escape sequences:
-    ///   • SGR codes:  ESC [ ... m
-    ///   • OSC 8:      ESC ] 8 ;; url ESC \
-    ///   • Other CSI:  ESC [ ... (letter)
+    ///   • OSC sequences (e.g. OSC 8 hyperlinks): ESC ] ... ST(ESC \) or BEL
+    ///   • CSI sequences (SGR colour codes etc.):  ESC [ ... letter
+    /// OSC must be stripped first so the ESC in ST is not consumed by the CSI pass.
     /// </summary>
-    static string StripAllAnsi(string s) =>
-        System.Text.RegularExpressions.Regex.Replace(
-            s,
-            @"\x1b(?:\[[^a-zA-Z]*[a-zA-Z]|\][^\x1b]*(?:\x1b\\|$))",
-            "");
+    static string StripAllAnsi(string s)
+    {
+        var re = System.Text.RegularExpressions.Regex.Replace;
+        s = re(s, @"\x1b\][^\x1b\x07]*(?:\x1b\\|\x07)", "");  // OSC
+        s = re(s, @"\x1b\[[^a-zA-Z]*[a-zA-Z]", "");            // CSI
+        return s;
+    }
 }
