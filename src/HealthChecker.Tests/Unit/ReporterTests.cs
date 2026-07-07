@@ -643,21 +643,24 @@ public class ReporterTests : IDisposable
         MakeReporter(noColor: true).Report(report);
         var outputNoColor = Output;
 
-        // Strip all ANSI escape sequences (both SGR color codes and OSC 8 hyperlinks)
-        // before comparing, so we assert on the readable text only.
-        StripAllAnsi(outputWithColor).Should().Be(outputNoColor);
+        // Strip all ANSI escape sequences and normalize line endings before comparing,
+        // so we assert on readable text content only. Both outputs are normalized
+        // because Spectre may emit \r\n in NoColors/legacy mode even on Linux.
+        StripAllAnsi(outputWithColor).Should().Be(StripAllAnsi(outputNoColor));
     }
 
     /// <summary>
-    /// Strips all ANSI escape sequences:
+    /// Strips all ANSI escape sequences and normalizes line endings:
     ///   • OSC sequences (e.g. OSC 8 hyperlinks): ESC ] ... ST(ESC \) or BEL
     ///   • CSI sequences (SGR colour codes etc.):  ESC [ ... letter
+    ///   • Carriage returns (\r) — Spectre may emit CRLF in NoColors mode
     /// OSC must be stripped first so the ESC in ST is not consumed by the CSI pass.
     /// </summary>
     static string StripAllAnsi(string s)
     {
         s = System.Text.RegularExpressions.Regex.Replace(s, @"\x1b\][^\x1b\x07]*(?:\x1b\\|\x07)", "");  // OSC
         s = System.Text.RegularExpressions.Regex.Replace(s, @"\x1b\[[^a-zA-Z]*[a-zA-Z]", "");            // CSI
+        s = s.Replace("\r", "");  // normalize \r\n → \n
         return s;
     }
 }
