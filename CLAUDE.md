@@ -68,21 +68,16 @@ After all three phases, `BuildReport` assembles a `HealthCheckReport` record and
 
 ## Config File Conventions
 
-Config files live in `configs/` and are selected by `--env`:
-
-- `config.dev.json` — `catalog.environment = "dev"`; k8s regions use `catalog_region: "sec"`; `argocd_token` is populated with a real JWT for local use.
-- `config.stg.json` — `catalog.environment = "stg"`; k8s regions use `catalog_region: "eun"`; `argocd_token` is populated.
-- `config.prod.json` — `catalog.environment = "prd"`; regions use `catalog_region: "euw"` / `"brs"` / `"eun"`; `argocd_token` is populated.
-- `config.sample.json` — same structure as prod but with `argocd_token: null`; safe to commit. Copy it when adding a new environment.
+Config files live in `configs/` and are selected by `--env=<name>` → `config.<name>.json`. They are gitignored (except `config.sample.json`). Copy `config.sample.json` when adding a new environment.
 
 Key fields:
 
 - `catalog.environment` — passed verbatim to the ServiceKatalog API and used in ArgoCD app name composition and VM URL construction.
-- `catalog.k8s_domain` — domain suffix for constructed k8s ingress URLs and VM target URLs (e.g. `novibet.systems`).
+- `catalog.k8s_domain` — domain suffix for constructed k8s ingress URLs and VM target URLs.
 - `catalog.argocd_server` — base URL of the ArgoCD server. Token resolution priority: `ARGOCD_TOKEN` env var → `argocd_token` in config → `~/.config/argocd/config` (written by `argocd login`).
 - `regions[*].catalog_platform` / `catalog_region` — the platform and region codes passed to the catalog API. If both are omitted, the runner skips catalog resolution and expects `vm_targets` or `kubernetes_url` to be hardcoded.
 - `regions[*].kibana_data_view_id` — per-region Kibana data view; overrides service-level `kibana_data_view_id` and global `kibana.data_view_id`.
-- `kibana.columns` — optional string array of Kibana Discover column names to pre-select in generated log links (e.g. `["level", "host.name", "message", "logger", "exceptionType", "exceptionMessage"]`). When null or empty, the URL uses `columns:!()` (Kibana default). Configured in all non-sample configs.
+- `kibana.columns` — optional string array of Kibana Discover column names to pre-select in generated log links. When null or empty, the URL uses `columns:!()` (Kibana default).
 - `services[*].alias` — short name matched against `--service`. Falls back to `catalog_name` when not set. Matched case-insensitively.
 
 ## Key Design Rules to Preserve
